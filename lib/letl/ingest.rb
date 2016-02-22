@@ -1,6 +1,8 @@
 require 'yaml'
 require_relative 'reducer'
 require_relative 'loader'
+require_relative 'profile'
+
 module Letl
   # Runs the ingest process. If run_all! is called, ingest will recurse through
   # each batch of records until a stop signal is retrieved from the state of

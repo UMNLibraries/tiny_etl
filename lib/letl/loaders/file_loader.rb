@@ -10,7 +10,7 @@ module Letl
       @file_class = file_class
     end
 
-    def load
+    def load!
       file_class.open("#{dir}/#{filename}.json") { |file| file.write(data) }
     end
 

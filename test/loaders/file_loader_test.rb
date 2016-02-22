@@ -7,11 +7,11 @@ class FileLoaderTest < Minitest::Test
   let(:mock_file) {MiniTest::Mock.new.expect :open, nil, [String]}
 
   def test_load_file
-    Letl::FileLoader.new(args: {dir: 'foo'}, state: {},file_class: mock_file).load
+    Letl::FileLoader.new(args: {dir: 'foo'}, state: {},file_class: mock_file).load!
     mock_file.verify
     # Must provide a file directory path
     assert_raises KeyError do
-      Letl::FileLoader.new(args: {}, state: {},file_class: mock_file).load
+      Letl::FileLoader.new(args: {}, state: {},file_class: mock_file).load!
     end
   end
 
