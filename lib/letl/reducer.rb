@@ -1,5 +1,4 @@
-Dir['./reducers/*.rb'].each { |file| require file }
-
+Dir["#{File.dirname(__FILE__)}/reducers/*.rb"].each { |file| require file }
 module Letl
   # Passes a shared state through a series of reducers. Each reducer is
   # responsible for modifying its own portion of the state and returning the
