@@ -6,7 +6,7 @@ module Letl
   class OaiExtractor
     attr_reader :response
     attr_accessor :args
-    def initialize(args: {}, oai_client: OAI::Client)
+    def initialize(args: {}, state: {}, oai_client: OAI::Client)
       @args = args
       @response = fetch_records(client(oai_client), args_resumption_token)
     end
