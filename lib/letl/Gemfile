@@ -1,0 +1,15 @@
+source 'https://rubygems.org'
+
+gem 'oai'
+
+group :test do
+  gem 'minitest', '~> 5.8'
+  gem 'vcr'
+  gem 'webmock'
+  gem 'guard'
+  gem 'guard-shell'
+end
+
+group :development do
+  gem 'rubocop'
+end
