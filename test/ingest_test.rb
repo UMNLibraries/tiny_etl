@@ -1,5 +1,5 @@
+require_relative './test_helper'
 require 'letl/profile'
-require 'test_helper'
 require 'letl/ingest'
 
 class TestReducer
