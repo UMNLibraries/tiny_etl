@@ -1,6 +1,6 @@
 require 'oai'
 
-module Tetl
+module TinyEtl
   # A basic example of an OAI extractor. This version works in tandem with
   # the contentdm extractor
   class OaiExtractor

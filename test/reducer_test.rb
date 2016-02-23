@@ -1,5 +1,5 @@
 require_relative './test_helper'
-require 'tetl/reducer'
+require 'tiny_etl/reducer'
 
 class ReducerTest < Minitest::Test
   extend Minitest::Spec::DSL
@@ -8,7 +8,7 @@ class ReducerTest < Minitest::Test
   let(:reducers) { [{reducer: reducer, args: {uri: 'http://example.com'}}] }
 
   def test_extractions
-    Tetl::Reducer.new(reducers: reducers).reduce
+    TinyEtl::Reducer.new(reducers: reducers).reduce
     reducer.verify
     reducer_object.verify
   end

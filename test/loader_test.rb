@@ -1,5 +1,5 @@
 require_relative './test_helper'
-require 'tetl/loader'
+require 'tiny_etl/loader'
 
 class LoadTest < Minitest::Test
   extend Minitest::Spec::DSL
@@ -9,7 +9,7 @@ class LoadTest < Minitest::Test
   let(:loaders) { [{loader: loader}.merge(params)]}
 
   def test_load
-    Tetl::Loader.new({}, loaders: loaders).load_each!
+    TinyEtl::Loader.new({}, loaders: loaders).load_each!
     loader.verify
     loader_object.verify
   end

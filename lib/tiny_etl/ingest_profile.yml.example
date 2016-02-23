@@ -1,12 +1,12 @@
 :reducers:
-  - :reducer: Tetl::OaiExtractor
+  - :reducer: TinyEtl::OaiExtractor
     :args:
       :base_uri: 'https://server16022.contentdm.oclc.org/oai.php'
-  - :reducer: Tetl::ContentdmExtractor
+  - :reducer: TinyEtl::ContentdmExtractor
     :args:
       :base_uri: 'https://server16022.contentdm.oclc.org/dmwebservices/index.php'
-  - :reducer: Tetl::JsonTransformer
+  - :reducer: TinyEtl::JsonTransformer
 :loaders:
-  - :loader: Tetl::FileLoader
+  - :loader: TinyEtl::FileLoader
     :args:
       :dir: '/tmp/data'

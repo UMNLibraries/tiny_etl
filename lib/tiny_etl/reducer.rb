@@ -1,5 +1,5 @@
 Dir["#{File.dirname(__FILE__)}/reducers/*.rb"].each { |file| require file }
-module Tetl
+module TinyEtl
   # Passes a shared state through a series of reducers. Each reducer is
   # responsible for modifying its own portion of the state and returning the
   # the modified portion of the state along with the rest of the state to the

@@ -1,3 +1,3 @@
-module Tetl
+module TinyEtl
   VERSION = "0.1.0"
 end

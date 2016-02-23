@@ -1,4 +1,4 @@
-module Tetl
+module TinyEtl
   # Turns a has into a profile object that is used by reducers and loaders
   # within the ingest process
   class Profile

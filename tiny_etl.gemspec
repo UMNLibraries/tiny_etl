@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'tetl/version'
+require 'tiny_etl/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'tiny_etl'
-  spec.version       = Tetl::VERSION
+  spec.version       = TinyEtl::VERSION
   spec.authors       = ['Chad Fennell']
   spec.email         = ['fenne035@umn.edu']
 
