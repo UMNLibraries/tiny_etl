@@ -1,6 +1,6 @@
 require_relative './test_helper'
-require 'letl/profile'
-require 'letl/ingest'
+require 'tetl/profile'
+require 'tetl/ingest'
 
 class TestReducer
   attr_accessor :args, :second_pass

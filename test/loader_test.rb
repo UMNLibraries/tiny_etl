@@ -1,5 +1,5 @@
 require_relative './test_helper'
-require 'letl/loader'
+require 'tetl/loader'
 
 class LoadTest < Minitest::Test
   extend Minitest::Spec::DSL

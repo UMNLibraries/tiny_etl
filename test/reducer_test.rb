@@ -1,5 +1,5 @@
 require_relative './test_helper'
-require 'letl/reducer'
+require 'tetl/reducer'
 
 class ReducerTest < Minitest::Test
   extend Minitest::Spec::DSL

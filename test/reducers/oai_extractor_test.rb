@@ -1,5 +1,5 @@
 require_relative '../test_helper'
-require 'letl/reducers/oai_extractor'
+require 'tetl/reducers/oai_extractor'
 
 class OaiExtractorTest < Minitest::Test
   extend Minitest::Spec::DSL

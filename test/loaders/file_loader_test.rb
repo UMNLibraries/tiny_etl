@@ -1,5 +1,5 @@
 require_relative '../test_helper'
-require 'letl/loaders/file_loader'
+require 'tetl/loaders/file_loader'
 require 'digest'
 
 class FileLoaderTest < Minitest::Test

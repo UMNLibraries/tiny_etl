@@ -1,5 +1,5 @@
 require_relative './test_helper'
-require 'letl/profile'
+require 'tetl/profile'
 
 Reducer1 = Struct.new("Reducer1")
 Reducer2 = Struct.new("Reducer2")

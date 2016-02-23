@@ -1,5 +1,5 @@
 require_relative '../test_helper'
-require 'letl/reducers/json_transformer'
+require 'tetl/reducers/json_transformer'
 
 class ContentdmTest < Minitest::Test
   extend Minitest::Spec::DSL

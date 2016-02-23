@@ -1,5 +1,5 @@
 require_relative '../test_helper'
-require 'letl/reducers/contentdm_extractor'
+require 'tetl/reducers/contentdm_extractor'
 require 'digest'
 
 class ContentdmTest < Minitest::Test
