@@ -11,7 +11,7 @@ module Letl
     end
 
     def load!
-      file_class.open("#{dir}/#{filename}.json") { |file| file.write(data) }
+      file_class.open("#{dir}/#{filename}.json", 'w') { |file| file.write(data) }
     end
 
     private
