@@ -1,7 +1,0 @@
-:reducers:
-  - :reducer: OaiExtractor
-    :args:
-      :base_uri: 'https://server16022.contentdm.oclc.org/oai.php'
-  - :reducer: ContentdmExtractor
-    :args:
-      :base_uri: 'https://server16022.contentdm.oclc.org/dmwebservices/index.php'
