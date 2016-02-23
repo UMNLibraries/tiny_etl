@@ -4,14 +4,14 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'tetl/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "Tiny ETL"
+  spec.name          = "tiny_etl"
   spec.version       = Tetl::VERSION
   spec.authors       = ["Chad Fennell"]
   spec.email         = ["fenne035@umn.edu"]
 
   spec.summary       = %q{A Tiny Ruby ETL Library}
   spec.description   = %q{Chain together a set of plain old Ruby reducers and pipe the result into one or more plain old Ruby loaders.}
-  spec.license       = "© 2016 Regents of the University of Minnesota. All rights reserved. (Temporary until approved for open source license)"
+  spec.license       = "© 2016 Regents of the Univ. Of Minnesota. All rights reserved"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.
