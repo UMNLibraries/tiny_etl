@@ -41,7 +41,8 @@ class IngestTest < Minitest::Test
     config = {:reducers=>[{:reducer=>"OaiThing", :args=>"Blergh"}]}
     ingest = TinyEtl::Ingest.new(config, profile: mock_profile, reducer: mock_reducer, loader: mock_loader)
     ingest.run!
-    assert_equal [{:reducer=>"OaiThing", :args=>"Blergh"}], ingest.next_components
+    assert_respond_to ingest, :stop?
+    assert_equal [{:reducer=>"OaiThing", :args=>"Blergh"}], ingest.next_profile
     mock_reducer.verify
     mock_profile.verify
     mock_loader.verify

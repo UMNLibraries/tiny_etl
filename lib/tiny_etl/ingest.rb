@@ -20,6 +20,7 @@ module TinyEtl
     def run!
       @state = reducer.new(reducers: profile.reducers).reduce
       loader.new(state, loaders: loaders).load_each!
+      self
     end
 
     def run_all!
@@ -27,8 +28,12 @@ module TinyEtl
       self.class.new(next_profile.to_h).run_all! unless stop?
     end
 
-    def next_components
-      profile.replace_components(reducers: next_reducers, loaders: loaders)
+    def stop?
+      state.fetch(:stop, false)
+    end
+
+    def next_profile
+      profile.class.new(next_components)
     end
 
     private
@@ -37,19 +42,15 @@ module TinyEtl
       state.fetch(:reducers, [])
     end
 
+    def next_components
+      profile.replace_components(reducers: next_reducers, loaders: loaders)
+    end
+
     # For now, loaders can't modify loader config they way that reducers can.
     # This is because reducers like OAI return config that allows them to fetch
     # successive batches of content
     def loaders
       @loaders ||= profile.loaders
-    end
-
-    def next_profile
-      profile.class.new(next_components)
-    end
-
-    def stop?
-      state.fetch(:stop, false)
     end
 
     def extraction
