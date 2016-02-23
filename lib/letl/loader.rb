@@ -1,5 +1,5 @@
 Dir["#{File.dirname(__FILE__)}/loaders/*.rb"].each { |file| require file }
-module Letl
+module Tetl
   # Call each loader with state provided by reducers
   class Loader
     attr_reader :loaders, :state

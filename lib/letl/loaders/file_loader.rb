@@ -1,6 +1,6 @@
 require 'digest/sha1'
 
-module Letl
+module Tetl
   # A Simple loader that writes data to disk
   class FileLoader
     attr_accessor :state, :args, :file_class

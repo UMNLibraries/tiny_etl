@@ -1,6 +1,6 @@
 require 'json'
 
-module Letl
+module Tetl
   # Transform a ruby hash into an array
   class JsonTransformer
     attr_accessor :initial_state

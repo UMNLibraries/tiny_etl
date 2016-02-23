@@ -39,7 +39,7 @@ class IngestTest < Minitest::Test
 
   def test_run
     config = {:reducers=>[{:reducer=>"OaiThing", :args=>"Blergh"}]}
-    ingest = Letl::Ingest.new(config, profile: mock_profile, reducer: mock_reducer, loader: mock_loader)
+    ingest = Tetl::Ingest.new(config, profile: mock_profile, reducer: mock_reducer, loader: mock_loader)
     ingest.run!
     assert_equal config, ingest.next_reducers
     mock_reducer.verify
@@ -50,7 +50,7 @@ class IngestTest < Minitest::Test
 
   def test_run_all
     config = {reducers: [{reducer: TestReducer, args: {foo: 'bar'}}]}
-    ingest = Letl::Ingest.new(config)
+    ingest = Tetl::Ingest.new(config)
     ingest.run_all!
   end
 end

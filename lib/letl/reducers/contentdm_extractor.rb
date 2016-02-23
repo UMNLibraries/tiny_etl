@@ -1,7 +1,7 @@
 require 'net/http'
 require 'json'
 
-module Letl
+module Tetl
   # Combins itemInfo, compoundInfo and image data from a contentdm API endpoint
   # into a single response.
   # Expects to recive an array of identifiers from an OAI extractor and

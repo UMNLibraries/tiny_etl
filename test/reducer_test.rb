@@ -8,7 +8,7 @@ class ReducerTest < Minitest::Test
   let(:reducers) { [{reducer: reducer, args: {uri: 'http://example.com'}}] }
 
   def test_extractions
-    Letl::Reducer.new(reducers: reducers).reduce
+    Tetl::Reducer.new(reducers: reducers).reduce
     reducer.verify
     reducer_object.verify
   end

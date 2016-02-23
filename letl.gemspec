@@ -4,12 +4,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'letl/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "Lil'ETL"
-  spec.version       = Letl::VERSION
+  spec.name          = "Tiny ETL"
+  spec.version       = Tetl::VERSION
   spec.authors       = ["Chad Fennell"]
   spec.email         = ["fenne035@umn.edu"]
 
-  spec.summary       = %q{A Little Ruby ETL library}
+  spec.summary       = %q{A Tiny Ruby ETL Library}
   spec.description   = %q{Chain together a set of plain old Ruby reducers and pipe the result into one or more plain old Ruby loaders.}
   spec.license       = "© 2016 Regents of the University of Minnesota. All rights reserved. (Temporary until approved for open source license)"
 

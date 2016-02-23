@@ -9,7 +9,7 @@ class LoadTest < Minitest::Test
   let(:loaders) { [{loader: loader}.merge(params)]}
 
   def test_load
-    Letl::Loader.new({}, loaders: loaders).load_each!
+    Tetl::Loader.new({}, loaders: loaders).load_each!
     loader.verify
     loader_object.verify
   end
