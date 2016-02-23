@@ -8,11 +8,11 @@ module TinyEtl
     end
 
     def reducers
-      constantize_config(config.fetch(:reducers, {}), :reducer)
+      constantize_config(config.fetch(:reducers, []), :reducer)
     end
 
     def loaders
-      constantize_config(config.fetch(:loaders, {}), :loader)
+      constantize_config(config.fetch(:loaders, []), :loader)
     end
 
     def find_config(reducer)
@@ -20,25 +20,48 @@ module TinyEtl
     end
 
     def merge_reducers(replacements)
-      reducers.map do |config|
-        replacement_config = replacement_config(config[:reducer], replacements)
-        !replacement_config.empty? ? replacement_config : config
-      end
+      merge_component(reducers, replacements, :reducer)
     end
 
-    def to_h
+    def components
       { reducers: reducers, loaders: loaders }
     end
 
+    def replace_components(replacements)
+      new_components = components
+      new_components[:reducers] = replace_reducers(replacements)
+      new_components[:loaders]  = replace_loaders(replacements)
+      new_components
+    end
+
+    def to_h
+      components
+    end
+
     private
+
+    def replace_loaders(replacements)
+      replace(loaders, replacements.fetch(:loaders, []), :loader)
+    end
+
+    def replace_reducers(replacements)
+      replace(reducers, replacements.fetch(:reducers, []), :reducer)
+    end
 
     def constantize_config(values, key)
       values.map { |config| config.merge(key => constantize(config[key])) }
     end
 
-    def replacement_config(old_reducer, replacement_reducers)
-      replacement_reducers.find do |replacement|
-        replacement[:reducer] == old_reducer
+    def replace(components, replacements, const_key)
+      components.map! do |original|
+        replacement = find(replacements, original[const_key], const_key)
+        !replacement.empty? ? replacement : original
+      end
+    end
+
+    def find(replacements, component_const, key)
+      replacements.find do |replacement|
+        replacement[key] == component_const
       end || {}
     end
 

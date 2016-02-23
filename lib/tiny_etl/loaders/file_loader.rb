@@ -11,13 +11,17 @@ module TinyEtl
     end
 
     def load!
-      file_class.open("#{dir}/#{filename}.json", 'w') { |file| file.write(data) }
+      file_class.open(filepath, 'w') { |file| file.write(data) }
     end
 
     private
 
     def data
       @data ||= state.fetch(:data, '')
+    end
+
+    def filepath
+      "#{dir}/#{filename}.json"
     end
 
     def filename

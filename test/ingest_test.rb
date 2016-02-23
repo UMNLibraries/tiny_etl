@@ -24,7 +24,7 @@ class IngestTest < Minitest::Test
 
   let(:mock_profile_object) do
     p = Minitest::Mock.new
-    p.expect :merge_reducers, [{reducer: 'OaiThing', args: 'Blergh'}], [Array]
+    p.expect :replace_components, [{reducer: 'OaiThing', args: 'Blergh'}], [{:reducers=>[], :loaders=>[]}]
     p.expect :reducers, []
     p.expect :loaders, []
   end
@@ -41,7 +41,7 @@ class IngestTest < Minitest::Test
     config = {:reducers=>[{:reducer=>"OaiThing", :args=>"Blergh"}]}
     ingest = TinyEtl::Ingest.new(config, profile: mock_profile, reducer: mock_reducer, loader: mock_loader)
     ingest.run!
-    assert_equal config, ingest.next_reducers
+    assert_equal [{:reducer=>"OaiThing", :args=>"Blergh"}], ingest.next_components
     mock_reducer.verify
     mock_profile.verify
     mock_loader.verify
