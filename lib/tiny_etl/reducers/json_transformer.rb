@@ -9,13 +9,13 @@ module TinyEtl
     end
 
     def state
-      initial_state.merge(data)
+      initial_state.merge(load_data)
     end
 
     private
 
-    def data
-      { data: initial_state.fetch(:data).to_json }
+    def load_data
+      { data: initial_state.to_json }
     end
   end
 end
