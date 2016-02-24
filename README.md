@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-Create an Ingest Profile YAML file
+Create an Ingest Profile YAML file.
 
 example profile.yml:
 ```
@@ -38,9 +38,9 @@ example profile.yml:
       :dir: '/tmp/data'
 ```
 
-Create a Ruby file and run the ingester (a single batch of OAI results in this case):
+Create a Ruby file and run the ingester (a single batch of OAI results in this case).
 
-app.rb
+example app.rb:
 ```
 require 'tiny_etl'
 
