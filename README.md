@@ -51,7 +51,7 @@ ingest = TinyEtl::Ingest.new(config).run!
 
 $ ruby app.rb
 
-Ingest Public Interface
+TinyEtl::Ingest - Public Interface
 
 | Method  | Description |
 | ------------- | ------------- |
