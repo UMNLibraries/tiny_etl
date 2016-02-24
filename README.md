@@ -20,9 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-Create an Ingest Profile YAML file:
+Create an Ingest Profile YAML file
 
-profile.yml
+example profile.yml:
 ```
 :reducers:
   - :reducer: TinyEtl::OaiExtractor
