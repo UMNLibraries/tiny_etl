@@ -57,7 +57,7 @@ TinyEtl::Ingest - Public Interface
 | ------------- | ------------- |
 | **run!**  | Run the all reducers and loaders specified within configuration passed to `Ingest.new`  |
 | **run_all!**  | Run the ingest process (all reducers and loaders) recursively until the **stop?** method evaluates to ```true```ruby   |
-| **stop?**  | Checks the **state** resulting from a set of reducers to see if a **stop** semaphore has been returned (```state.fetch(:stop, false)```ruby)  |
+| **stop?**  | Checks the **state** resulting from a set of reducers to see if a **stop** semaphore has been returned (`state.fetch(:stop, false)`)  |
 | **next_profile**  | Merges new reducer configuration returned within the state resulting from processing a set of reducers into the original configuration. This allows batch-oriented reducers such as an OAI extractor to pass successive parameters to themselves on each ingest run.  The result of this method call can be passed directly to `Ingest.new` in order to request the next batch of results. Used in combination with **stop?**, you may construct your own recursive batch ingest process. |
 
 ## Your own Reducers and Loaders
