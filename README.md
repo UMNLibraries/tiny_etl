@@ -38,6 +38,18 @@ example profile.yml:
       :dir: '/tmp/data'
 ```
 
+The above example requires the [OAI gem](https://github.com/code4lib/ruby-oai), so you'll need to add that to your Gemfile or install it manually:
+
+```ruby
+gem 'tiny_etl'
+```
+
+$ Bundle
+
+or
+
+$ gem install oai
+
 Create a Ruby file and run the ingester (a single batch of OAI results in this case).
 
 example app.rb:
