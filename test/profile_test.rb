@@ -44,4 +44,11 @@ class ProfileTest < Minitest::Test
     expected = {:reducers=>[{:reducer=>Struct::Reducer1}, {:reducer=>Struct::Reducer2}], :loaders=>[{:loader=>Struct::Loader}]}
     assert_equal expected, profile.replace_components(reducers: new_components)
   end
+
+  def test_config_to_symbols
+    config = {'reducers' => [{'reducer' => Reducer1, 'args' => {'foo' => 'bar'}}]}
+    profile = TinyEtl::Profile.new(config)
+    expected = [{:reducer=>Struct::Reducer1, :args=>{:foo=>"bar"}}]
+    assert_equal expected, profile.reducers
+  end
 end

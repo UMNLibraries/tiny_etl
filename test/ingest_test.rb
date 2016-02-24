@@ -54,12 +54,4 @@ class IngestTest < Minitest::Test
     ingest = TinyEtl::Ingest.new(config)
     ingest.run_all!
   end
-
-  def test_config_to_symbols
-    config = {'reducers' => [{'reducer' => TestReducer, 'args' => {'foo' => 'bar'}}]}
-    ingest = TinyEtl::Ingest.new(config)
-    ingest.run!
-    expected = {:reducers=>[{:reducer=>TestReducer, :args=>{:foo=>"bar", :second_pass=>true}}], :loaders=>[]}
-    assert_equal expected, ingest.next_profile.to_h
-  end
 end
