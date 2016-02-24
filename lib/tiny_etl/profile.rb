@@ -4,7 +4,7 @@ module TinyEtl
   class Profile
     attr_accessor :config
     def initialize(config)
-      @config = config
+      @config = symbolize(config)
     end
 
     def reducers
@@ -39,6 +39,19 @@ module TinyEtl
     end
 
     private
+
+    # Sybolize algorithm via https://gist.github.com/Integralist/9503099
+    # Sidekiq will transform our Ruby hash into a JSON hash, removing out
+    # symbol key lookups. Symbolize converts them back to symbols
+    def symbolize(obj)
+      return obj.reduce({}) do |memo, (k, v)|
+        memo.tap { |m| m[k.to_sym] = symbolize(v) }
+      end if obj.is_a? Hash
+      return obj.reduce([]) do |memo, v| 
+        memo << symbolize(v); memo
+      end if obj.is_a? Array
+      obj
+    end
 
     def replace_loaders(replacements)
       replace(loaders, replacements.fetch(:loaders, []), :loader)
