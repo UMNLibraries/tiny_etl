@@ -94,6 +94,7 @@ Reducers are called in the order in which they are declared in an Ingest Profile
 Loaders are very similar to reducers except that loaders are not allowed to modify the state. Each loader is given the final state produced by the reducers. Loaders accept *state* and *arg* keyword arguments and respond to a *load!* message.
 
 ```
+require 'digest/sha1'
 module TinyEtl
   # A Simple loader that writes data to disk
   class FileLoader
