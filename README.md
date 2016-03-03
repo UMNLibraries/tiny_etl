@@ -113,9 +113,11 @@ Log into an interactive shell for this file:
 $ irb -r ./app.rb
 
 Load your ingest profile:
+
 2.2.3 :001 > config = YAML.load(File.read("#{File.dirname(__FILE__)}/profile.yml"))
 
 Run the ingester:
+
 2.2.3 :001 > IngestWorker.new.perform_async(config)
 
 ## Your own Reducers and Loaders
