@@ -2,6 +2,8 @@
 
 A Tiny Ruby ETL Library. Chain together a set of reducer classes and pipe the result into one or more loader classes.
 
+**This is currently an experimental library**
+
 ## Installation
 
 Add this line to your application's Gemfile:
