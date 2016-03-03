@@ -6,7 +6,7 @@ require_relative 'profile'
 module TinyEtl
   # Runs the ingest process. Each reducer should take care to pass the
   # entire state back and only modify parts of the state that it needs to
-  # modify.
+  # modify
   class Ingest
     attr_reader :profile, :reducer, :loader, :state
     def initialize(config, reducer: Reducer, loader: Loader, profile: Profile)
@@ -16,8 +16,7 @@ module TinyEtl
     end
 
     def run!
-      @state = reducer.new(reducers: profile.reducers).reduce
-      loader.new(state, loaders: loaders).load_each!
+      reduce_and_load!
       self
     end
 
@@ -30,6 +29,19 @@ module TinyEtl
     end
 
     private
+
+    def reduce_and_load!
+      reduce!
+      load!
+    end
+
+    def reduce!
+      @state = reducer.new(reducers: profile.reducers).reduce
+    end
+
+    def load!
+      loader.new(state, loaders: loaders).load_each!
+    end
 
     def next_reducers
       state.fetch(:reducers, [])
