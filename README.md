@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-Create an Ingest Profile YAML file
+Create an Ingest Profile YAML file.
 
 example profile.yml:
 ```
@@ -51,9 +51,21 @@ or
 
 $ gem install oai
 
-Create a Ruby file and run the ingester (a single batch of OAI results in this case):
+The above example requires the [OAI gem](https://github.com/code4lib/ruby-oai), so you'll need to add that to your Gemfile or install it manually:
 
-app.rb
+```ruby
+gem 'tiny_etl'
+```
+
+$ bundle
+
+or
+
+$ gem install oai
+
+Create a Ruby file and run the ingester (a single batch of OAI results in this case).
+
+example app.rb:
 ```
 require 'tiny_etl'
 
@@ -64,14 +76,13 @@ ingest = TinyEtl::Ingest.new(config).run!
 
 $ ruby app.rb
 
-Ingest Public Interface
+TinyEtl::Ingest - Public Interface
 
 | Method  | Description |
 | ------------- | ------------- |
-| **run!**  | Run the all reducers and loaders specified within configuration passed to ```Ingest.new```ruby  |
-| **stop?**  | Checks the **state** resulting from a set of reducers to see if a **stop** semaphore has been returned (```state.fetch(:stop, false)```ruby)  |
-| **next_profile**  | Merges new reducer configuration returned within the state resulting from processing a set of reducers into the original configuration. This allows batch-oriented reducers such as an OAI extractor to pass successive parameters to themselves on each ingest run.  The result of this method call can be passed directly to ```Ingest.new```ruby in order to request the next batch of results. Used in combination with **stop2**, you may construct your own recursive batch ingest process. |
-
+| **run!**  | Run the all reducers and loaders specified within configuration passed to `Ingest.new`.  |
+| **stop?**  | Checks the **state** resulting from a set of reducers to see if a **stop** semaphore has been returned (`state.fetch(:stop, false)`).  |
+| **next_profile**  | Merges new reducer configuration returned within the state resulting from processing a set of reducers into the original configuration. This allows batch-oriented reducers such as an OAI extractor to pass successive parameters to themselves on each ingest run.  The result of this method call can be passed directly to `Ingest.new` in order to request the next batch of results. Used in combination with **stop?**, you may construct your own recursive batch ingest process. |
 
 **Running an Ingest via Sidekiq (standalone)**
 
@@ -141,6 +152,7 @@ Reducers are called in the order in which they are declared in an Ingest Profile
 Loaders are very similar to reducers except that loaders are not allowed to modify the state. Each loader is given the final state produced by the reducers. Loaders accept *state* and *arg* keyword arguments and respond to a *load!* message.
 
 ```
+require 'digest/sha1'
 module TinyEtl
   # A Simple loader that writes data to disk
   class FileLoader
@@ -191,5 +203,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 
 © 2016 Regents of the University. Of Minnesota. All rights reserved.
 
-(Awaiting approval for MIT license.)
-
+(Awaiting approval for MIT license.)s
