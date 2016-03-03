@@ -4,11 +4,9 @@ require_relative 'loader'
 require_relative 'profile'
 
 module TinyEtl
-  # Runs the ingest process. If run_all! is called, ingest will recurse through
-  # each batch of records until a stop signal is retrieved from the state of
-  # the last reducer. This means each reducer should take care to pass the
+  # Runs the ingest process. Each reducer should take care to pass the
   # entire state back and only modify parts of the state that it needs to
-  # modify
+  # modify.
   class Ingest
     attr_reader :profile, :reducer, :loader, :state
     def initialize(config, reducer: Reducer, loader: Loader, profile: Profile)
@@ -21,11 +19,6 @@ module TinyEtl
       @state = reducer.new(reducers: profile.reducers).reduce
       loader.new(state, loaders: loaders).load_each!
       self
-    end
-
-    def run_all!
-      run!
-      self.class.new(next_profile.to_h).run_all! unless stop?
     end
 
     def stop?

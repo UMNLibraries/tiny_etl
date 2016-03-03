@@ -48,10 +48,4 @@ class IngestTest < Minitest::Test
     mock_loader.verify
     mock_loader_instance.verify
   end
-
-  def test_run_all
-    config = {reducers: [{reducer: TestReducer, args: {foo: 'bar'}}]}
-    ingest = TinyEtl::Ingest.new(config)
-    ingest.run_all!
-  end
 end

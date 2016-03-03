@@ -20,9 +20,9 @@ Or install it yourself as:
 
 ## Usage
 
-Create an Ingest Profile YAML file:
+Create an Ingest Profile YAML file
 
-profile.yml
+example profile.yml:
 ```
 :reducers:
   - :reducer: TinyEtl::OaiExtractor
@@ -37,6 +37,17 @@ profile.yml
     :args:
       :dir: '/tmp/data'
 ```
+The above example requires the [OAI gem](https://github.com/code4lib/ruby-oai), so you'll need to add that to your Gemfile or install it manually:
+
+```ruby
+gem 'tiny_etl'
+```
+
+$ Bundle
+
+or
+
+$ gem install oai
 
 Create a Ruby file and run the ingester (a single batch of OAI results in this case):
 
@@ -56,9 +67,43 @@ Ingest Public Interface
 | Method  | Description |
 | ------------- | ------------- |
 | **run!**  | Run the all reducers and loaders specified within configuration passed to ```Ingest.new```ruby  |
-| **run_all!**  | Run the ingest process (all reducers and loaders) recursively until the **stop?** method evaluates to ```true```ruby   |
 | **stop?**  | Checks the **state** resulting from a set of reducers to see if a **stop** semaphore has been returned (```state.fetch(:stop, false)```ruby)  |
 | **next_profile**  | Merges new reducer configuration returned within the state resulting from processing a set of reducers into the original configuration. This allows batch-oriented reducers such as an OAI extractor to pass successive parameters to themselves on each ingest run.  The result of this method call can be passed directly to ```Ingest.new```ruby in order to request the next batch of results. Used in combination with **stop2**, you may construct your own recursive batch ingest process. |
+
+
+**Running an Ingest via Sidekiq (standalone)**
+
+Add this line to your application's Gemfile:
+
+`gem 'sidekiq'`
+
+example app.rb:
+```ruby
+require 'sidekiq'
+require 'tiny_etl'
+require 'oai'
+
+class IngestWorker
+  include Sidekiq::Worker
+  def perform(config)
+    ingest = TinyEtl::Ingest.new(config).run!
+    next_config = ingest.next_profile.to_h
+    IngestWorker.perform_async(next_config)
+  end
+end
+```
+
+Start the sidekiq client:
+$ sidekiq -r ./app.rb
+
+Log into an interactive shell for this file:
+$ irb -r ./app.rb
+
+Load your ingest profile:
+2.2.3 :001 > config = YAML.load(File.read("#{File.dirname(__FILE__)}/profile.yml"))
+
+Run the ingester:
+2.2.3 :001 > IngestWorker.new.perform_async(config)
 
 ## Your own Reducers and Loaders
 
