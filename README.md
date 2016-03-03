@@ -45,7 +45,7 @@ The above example requires the [OAI gem](https://github.com/code4lib/ruby-oai), 
 gem 'tiny_etl'
 ```
 
-$ Bundle
+$ bundle
 
 or
 
