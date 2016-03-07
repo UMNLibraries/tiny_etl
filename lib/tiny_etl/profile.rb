@@ -19,10 +19,6 @@ module TinyEtl
       reducers.index.reducers.inject { |a, _e| a[:reducer] == reducer }
     end
 
-    def merge_reducers(replacements)
-      merge_component(reducers, replacements, :reducer)
-    end
-
     def components
       { reducers: reducers, loaders: loaders }
     end
