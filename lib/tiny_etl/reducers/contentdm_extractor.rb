@@ -1,6 +1,8 @@
 require 'net/http'
 require 'json'
 
+# I hate this
+# TODO: Refactor
 module TinyEtl
   # Combins itemInfo, compoundInfo and image data from a contentdm API endpoint
   # into a single response.
@@ -93,7 +95,7 @@ module TinyEtl
     end
 
     def record_missing?(record)
-      record == {} || record == missing_record
+      record == {} || record['code'] == '-2' || record == missing_record
     end
 
     def missing_record

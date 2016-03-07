@@ -18,8 +18,13 @@ class ContentdmTest < Minitest::Test
   end
 
   def test_record_missing
-    expected = {:status=>"Record Missing", :collection=>"yeehaw_shakespeare", :id=>666}
-    assert_equal expected, extractor.build_record(identifiers: {collection: 'yeehaw_shakespeare', identifier:  666})
+    expected = {:status=>"Record Missing", :collection=>'nfh', :id=>666666}
+    assert_equal expected, extractor.build_record(identifiers: {collection: 'nfh', identifier:  666666})
+  end
+
+  def test_record_and_collection_missing
+    expected = {:status=>"Record Missing", :collection=>"yeehaw_shakespeare", :id=>666666}
+    assert_equal expected, extractor.build_record(identifiers: {collection: 'yeehaw_shakespeare', identifier:  666666})
   end
 
   def test_get_compount_object_info_missing
