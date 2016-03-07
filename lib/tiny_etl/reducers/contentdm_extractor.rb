@@ -21,9 +21,9 @@ module TinyEtl
     end
 
     def state
-      # Replace the OAI extraction records in the state tree (but keeps the
-      # resumption_token)
-      content_dm_records
+      extraction = oai_extraction.dup
+      extraction[:data] = build_each_record
+      @extraction ||= extraction
     end
 
     def item_api_request(verb, collection, id)
@@ -51,16 +51,14 @@ module TinyEtl
       [collection, id]
     end
 
-    def content_dm_records
-      extraction = oai_extraction.dup
-      extraction[:data] = build_each_record
-      @extraction ||= extraction
-    end
-
     def build_each_record
-      oai_extraction.fetch(:data, []).map do |oai_record|
+      available_records.map do |oai_record|
         build_record(oai_record)
       end
+    end
+
+    def available_records
+      oai_extraction.fetch(:data, []).select {|result| result[:status] != 'deleted'}
     end
 
     def item_info

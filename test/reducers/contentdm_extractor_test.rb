@@ -27,6 +27,12 @@ class ContentdmTest < Minitest::Test
     assert_equal expected, extractor.build_record(identifiers: {collection: 'yeehaw_shakespeare', identifier:  666666})
   end
 
+  def test_oai_deleted
+    extractor = TinyEtl::ContentdmExtractor.new(args: {base_uri: base_uri}, state: {resumption_token: 'foo', data: [{status: 'deleted', :identifiers=>{collection: 'nemhc', identifier: 4080}}]})
+    assert_equal [], extractor.state[:data]
+    assert_equal 'foo', extractor.state[:resumption_token]
+  end
+
   def test_get_compount_object_info_missing
     expected = %q[{"message":"Requested item is not compound","code":"-2"}]
     response = TinyEtl::ContentdmExtractor.new(args: {base_uri: base_uri}, state: {}).item_api_request('dmGetCompoundObjectInfo', 'yeehaw_shakespeare', 666)
