@@ -115,6 +115,8 @@ module TinyEtl
 
     def compound_with_images
       pages = compound_record_info.fetch('page', [])
+      # When there is only one page, contentdm returns a hash
+      pages = (pages.is_a?(Hash)) ? [pages] : pages
       pages.map do |page|
         page.merge(build_image_uri(collection, page['pageptr']))
       end
