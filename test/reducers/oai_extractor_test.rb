@@ -14,6 +14,11 @@ class OaiExtractorTest < Minitest::Test
     assert_equal expected, response.extract_identifiers('oai:testendpoint.contentdm.oclc.org:civilwar/2')
   end
 
+  def test_correctly_labels_deleted
+    expected = {:deleted=> true, :identifiers=>{:collection=>"swede", :identifier=>0}}
+    assert_equal expected, response.state[:data].find {|item| item[:deleted] == true}
+  end
+
   def test_state
     assert_equal 200, response.state[:data].length
     assert_equal 'swede:96:oclc-cdm-allsets:0000-00-00:9999-99-99:oai_dc', response.state[:reducers].first[:args][:resumption_token]

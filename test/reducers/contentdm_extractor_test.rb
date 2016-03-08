@@ -28,7 +28,7 @@ class ContentdmTest < Minitest::Test
   end
 
   def test_oai_deleted
-    extractor = TinyEtl::ContentdmExtractor.new(args: {base_uri: base_uri}, state: {resumption_token: 'foo', data: [{status: 'deleted', :identifiers=>{collection: 'nemhc', identifier: 4080}}]})
+    extractor = TinyEtl::ContentdmExtractor.new(args: {base_uri: base_uri}, state: {resumption_token: 'foo', data: [{deleted: true, :identifiers=>{collection: 'nemhc', identifier: 4080}}]})
     assert_equal [], extractor.state[:data]
     assert_equal 'foo', extractor.state[:resumption_token]
   end

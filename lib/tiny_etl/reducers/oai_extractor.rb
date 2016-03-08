@@ -61,7 +61,7 @@ module TinyEtl
     def records
       response.map do |record|
         {
-          status: record.header.status,
+          deleted: record.header.deleted?,
           identifiers: extract_identifiers(record.header.identifier)
         }
       end

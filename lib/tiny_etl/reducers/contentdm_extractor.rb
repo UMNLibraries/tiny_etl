@@ -58,7 +58,7 @@ module TinyEtl
     end
 
     def available_records
-      oai_extraction.fetch(:data, []).select {|result| result[:status] != 'deleted'}
+      oai_extraction.fetch(:data, []).select {|result| result[:deleted] != true}
     end
 
     def item_info
