@@ -36,7 +36,7 @@ module TinyEtl
       if  record_missing?(record)
         record = missing_record
       else
-        record[:id] = id
+        record[:id] = "#{collection}:#{id}"
         record      = add_image(record)
         record      = record.merge(compound_objects)
       end
