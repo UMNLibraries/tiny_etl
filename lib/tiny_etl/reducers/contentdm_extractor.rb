@@ -4,26 +4,22 @@ require 'json'
 # I hate this
 # TODO: Refactor
 module TinyEtl
-  # Combins itemInfo, compoundInfo and image data from a contentdm API endpoint
+  # Combines itemInfo, compoundInfo and image data from a contentdm API endpoint
   # into a single response.
   # Expects to recive an array of identifiers from an OAI extractor and
   # performs lookups against a contentdm api.
   # TODO: extract out the contentdm API functionality from extractor
   # functionality
   class ContentdmExtractor
-    attr_reader :base_uri, :rest_client, :oai_extraction
-    attr_accessor :id, :collection
+    attr_reader :base_uri, :rest_client, :new_state
     def initialize(args: {}, state: {}, rest_client: Net::HTTP)
       @base_uri        = args[:base_uri]
       @rest_client     = rest_client
-      # This extractor expects the OAI extractor to be called first
-      @oai_extraction  = state
+      @new_state = state.dup
     end
 
     def state
-      extraction = oai_extraction.dup
-      extraction[:data] = build_each_record
-      @extraction ||= extraction
+      new_state.merge(data: build_each_record)
     end
 
     def item_api_request(verb, collection, id)
@@ -31,16 +27,13 @@ module TinyEtl
     end
 
     def build_record(oai_record)
-      @collection, @id = extract_identifiers(oai_record)
-      record = json_decode(item_info)
-      if  record_missing?(record)
-        record = missing_record
+      collection, id = extract_identifiers(oai_record)
+      compound_item = Contentdm::CompoundItem.new(base_uri, collection, id)
+      if compound_item.exists?
+        compound_item.to_h
       else
-        record[:id] = "#{collection}:#{id}"
-        record      = add_image(record)
-        record      = record.merge(compound_objects)
+        Contentdm::SingleItem.new(base_uri, collection, id).to_h
       end
-      record
     end
 
     private
@@ -59,83 +52,117 @@ module TinyEtl
     end
 
     def available_records
-      oai_extraction.fetch(:data, []).select {|result| result[:deleted] != true}
+      new_state.fetch(:data, []).select { |result| result[:deleted] != true }
+    end
+  end
+end
+
+module Contentdm
+  # Base class for Contentdm results. Not used directly. Use SingleItem
+  # CompoundItem instead
+  class Item
+    attr_accessor :base_uri, :collection, :id, :rest_client, :info
+    def initialize(base_uri, collection, id, rest_client: Net::HTTP)
+      @base_uri    = base_uri
+      @collection  = collection
+      @id          = id
+      @rest_client = rest_client
     end
 
-    def item_info
-      catch_item_errors(item_api_request('dmGetItemInfo', collection, id))
+    def info
+      @info ||= process_response api_request('dmGetItemInfo')
     end
 
-    def catch_item_errors(response)
-      item_info_error?(response.body) ? '{}' : response.body
+    def to_h
+      info.merge!(id: "#{collection}:#{id}")
     end
 
-    def item_info_error?(response_body)
+    def process_response(response)
+      JSON.parse(catch_errors(response))
+    end
+
+    def assets(id)
+      cdm_assets = Asset.new(base_uri, collection, id)
+      {
+        scalable_image_uri: cdm_assets.scalable_image,
+        original_file_uri: cdm_assets.original_file
+      }
+    end
+
+    def api_request(verb)
+      request("#{base_uri}?q=#{verb}/#{collection}/#{id}/json")
+    end
+
+    def request(location)
+      rest_client.get_response(URI(location)).body
+    end
+
+    def exists?
+      info.fetch('code', '') != '-2'
+    end
+
+    def catch_errors(response)
+      info_error?(response) ? '{"code": "-2"}' : response
+    end
+
+    def info_error?(response_body)
       response_body.include? 'Error looking up collection'
     end
-
-    def compound_record
-      item_api_request('dmGetCompoundObjectInfo', collection, id)
-    end
-
-    def image_uri(collection, id)
-      "#{base_uri}/utils/ajaxhelper/" \
-      "?CISOROOT=#{collection}"  \
-      "&CISOPTR=#{id}"  \
-      '&action=2'  \
-      '&DMSCALE=100'  \
-      '&DMWIDTH=10000'  \
-      '&DMHEIGHT=10000'
-    end
-
-    def add_image(record)
-      return record if commpound_objects?
-      record.merge(image_uri: image_uri(collection, id))
-    end
-
-    def record_missing?(record)
-      record == {} || record['code'] == '-2' || record == missing_record
+  end
+  # A contentdm record along with its info and its assets
+  class SingleItem < Item
+    def to_h
+      if exists?
+        super # Must call after exists, probably there is a better way
+        info.merge!(assets(id)).merge(record_type: 'single')
+      else
+        missing_record
+      end
     end
 
     def missing_record
       { status: 'Record Missing', collection: collection, id: id }
     end
-
-    def compound_record_info
-      @compound_record_info ||= json_decode(compound_record.body)
+  end
+  # A contentdm record along with its info and its assets and its compound info
+  class CompoundItem < Item
+    def exists?
+      compound_info.fetch('code', 1) != '-2'
     end
 
-    def compound_objects
-      if commpound_objects?
-        { compound_objects: compound_with_images, record_type: 'compound' }
-      else
-        { record_type: 'single' }
-      end
+    def compound_info
+      @compound_info ||= JSON.parse api_request('dmGetCompoundObjectInfo')
     end
 
-    def compound_with_images
-      pages = compound_record_info.fetch('page', [])
+    def to_h
+      super
+      pages = compound_info.fetch('page', [])
       # When there is only one page, contentdm returns a hash
-      pages = (pages.is_a?(Hash)) ? [pages] : pages
-      pages.map do |page|
-        page.merge(build_image_uri(collection, page['pageptr']))
-      end
+      pages = pages.is_a?(Hash) ? [pages] : pages
+      pages.map! { |page| page.merge(assets(page['pageptr'])) }
+      info.merge(compound_objects: pages, record_type: 'compound')
+    end
+  end
+
+  # Access contentdm assets
+  class Asset
+    attr_accessor :base_uri, :collection, :id
+    def initialize(base_uri, collection, id)
+      @base_uri   = base_uri
+      @collection = collection
+      @id         = id
     end
 
-    def build_image_uri(collection, id)
-      { image_uri: image_uri(collection, id) }
+    def original_file
+      "#{base_uri}/utils/getfile/collection/#{collection}/id/#{id}/filename/" \
+      "#{collection}-#{id}"
     end
 
-    def commpound_objects?
-      compound_record_info['code'] != '-2'
-    end
-
-    def json_decode(json)
-      JSON.parse json
-    end
-
-    def request(location)
-      rest_client.get_response URI location
+    def scalable_image
+      "#{base_uri}/utils/ajaxhelper/" \
+      "?CISOROOT=#{collection}"  \
+      "&CISOPTR=#{id}"  \
+      '&action=2'  \
     end
   end
 end
