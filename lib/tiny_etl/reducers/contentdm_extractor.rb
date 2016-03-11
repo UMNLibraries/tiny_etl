@@ -8,8 +8,6 @@ module TinyEtl
   # into a single response.
   # Expects to recive an array of identifiers from an OAI extractor and
   # performs lookups against a contentdm api.
-  # TODO: extract out the contentdm API functionality from extractor
-  # functionality
   class ContentdmExtractor
     attr_reader :api_url, :assets_url, :rest_client, :new_state
     def initialize(args: {}, state: {}, rest_client: Net::HTTP)
