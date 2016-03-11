@@ -141,14 +141,8 @@ module Contentdm
       pages = compound_info.fetch('page', [])
       # When there is only one page, contentdm returns a hash
       pages = pages.is_a?(Hash) ? [pages] : pages
-      pages.map! { |page| page.merge(assets(filename(page))) }
+      pages.map! { |page| page.merge(assets(page['pageptr'])) }
       info.merge(compound_objects: pages, record_type: 'compound')
-    end
-
-    private
-
-    def filename(page)
-      page['pagefile'].split('.').first
     end
   end
   # A single place to get assets from the contentdm api
