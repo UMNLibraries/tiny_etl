@@ -11,11 +11,12 @@ module TinyEtl
   # TODO: extract out the contentdm API functionality from extractor
   # functionality
   class ContentdmExtractor
-    attr_reader :base_uri, :rest_client, :new_state
+    attr_reader :api_url, :assets_url, :rest_client, :new_state
     def initialize(args: {}, state: {}, rest_client: Net::HTTP)
-      @base_uri        = args[:base_uri]
-      @rest_client     = rest_client
-      @new_state = state.dup
+      @api_url        = args[:api_url]
+      @assets_url     = args[:assets_url]
+      @rest_client    = rest_client
+      @new_state      = state.dup
     end
 
     def state
@@ -23,16 +24,16 @@ module TinyEtl
     end
 
     def item_api_request(verb, collection, id)
-      request("#{base_uri}?q=#{verb}/#{collection}/#{id}/json")
+      request("#{api_url}?q=#{verb}/#{collection}/#{id}/json")
     end
 
     def build_record(oai_record)
       collection, id = extract_identifiers(oai_record)
-      compound_item = Contentdm::CompoundItem.new(base_uri, collection, id)
-      if compound_item.exists?
-        compound_item.to_h
+      item = Contentdm::CompoundItem.new(api_url, assets_url, collection, id)
+      if item.exists?
+        item.to_h
       else
-        Contentdm::SingleItem.new(base_uri, collection, id).to_h
+        Contentdm::SingleItem.new(api_url, assets_url, collection, id).to_h
       end
     end
 
@@ -61,9 +62,10 @@ module Contentdm
   # Base class for Contentdm results. Not used directly. Use SingleItem
   # CompoundItem instead
   class Item
-    attr_accessor :base_uri, :collection, :id, :rest_client, :info
-    def initialize(base_uri, collection, id, rest_client: Net::HTTP)
-      @base_uri    = base_uri
+    attr_accessor :api_url, :assets_url, :collection, :id, :rest_client, :info
+    def initialize(api_url, assets_url, collection, id, rest_client: Net::HTTP)
+      @api_url     = api_url
+      @assets_url  = assets_url
       @collection  = collection
       @id          = id
       @rest_client = rest_client
@@ -82,7 +84,7 @@ module Contentdm
     end
 
     def assets(id)
-      cdm_assets = Asset.new(base_uri, collection, id)
+      cdm_assets = Asset.new(assets_url, collection, id)
       {
         scalable_image_uri: cdm_assets.scalable_image,
         original_file_uri: cdm_assets.original_file
@@ -90,7 +92,7 @@ module Contentdm
     end
 
     def api_request(verb)
-      request("#{base_uri}?q=#{verb}/#{collection}/#{id}/json")
+      request("#{api_url}?q=#{verb}/#{collection}/#{id}/json")
     end
 
     def request(location)
@@ -139,30 +141,36 @@ module Contentdm
       pages = compound_info.fetch('page', [])
       # When there is only one page, contentdm returns a hash
       pages = pages.is_a?(Hash) ? [pages] : pages
-      pages.map! { |page| page.merge(assets(page['pageptr'])) }
+      pages.map! { |page| page.merge(assets(filename(page))) }
       info.merge(compound_objects: pages, record_type: 'compound')
     end
-  end
 
-  # Access contentdm assets
+    private
+
+    def filename(page)
+      page['pagefile'].split('.').first
+    end
+  end
+  # A single place to get assets from the contentdm api
   class Asset
-    attr_accessor :base_uri, :collection, :id
-    def initialize(base_uri, collection, id)
-      @base_uri   = base_uri
+    attr_reader :assets_url, :collection, :id
+    def initialize(assets_url, collection, id)
+      @assets_url = assets_url
       @collection = collection
       @id         = id
     end
 
     def original_file
-      "#{base_uri}/utils/getfile/collection/#{collection}/id/#{id}/filename/" \
+      "#{assets_url}/utils/getfile/collection/" \
+      "#{collection}/id/#{id}/filename/" \
       "#{collection}-#{id}"
     end
 
     def scalable_image
-      "#{base_uri}/utils/ajaxhelper/" \
+      "#{assets_url}/utils/ajaxhelper/" \
       "?CISOROOT=#{collection}"  \
       "&CISOPTR=#{id}"  \
-      '&action=2'  \
+      '&action=2'
     end
   end
 end
