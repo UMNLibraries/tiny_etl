@@ -12,4 +12,12 @@ class ReducerTest < Minitest::Test
     reducer.verify
     reducer_object.verify
   end
+
+  def test_reduce_error
+    err = assert_raises RuntimeError do
+      TinyEtl::Reducer.new(reducers: [{reducer: Object}]).reduce
+    end
+    expected = "An error occurred for reducer \"Object\" with arguments \"\": wrong number of arguments (1 for 0)"
+    assert_equal expected, err.message
+  end
 end

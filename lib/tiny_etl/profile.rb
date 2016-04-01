@@ -15,10 +15,6 @@ module TinyEtl
       constantize_config(config.fetch(:loaders, []), :loader)
     end
 
-    def find_config(reducer)
-      reducers.index.reducers.inject { |a, _e| a[:reducer] == reducer }
-    end
-
     def components
       { reducers: reducers, loaders: loaders }
     end

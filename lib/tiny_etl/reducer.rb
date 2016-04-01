@@ -12,8 +12,18 @@ module TinyEtl
 
     def reduce
       reducers.inject([]) do |state, config|
-        config[:reducer].new(args: config[:args], state: state).state
+        reduce!(config, state)
       end
     end
+
+    private
+
+    def reduce!(config, state)
+      config[:reducer].new(args: config[:args], state: state).state
+    rescue Exception => e
+      raise "An error occurred for reducer \"#{config[:reducer]}\" " \
+      "with arguments \"#{config[:args]}\": #{e}"
+    end
+
   end
 end

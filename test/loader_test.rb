@@ -16,9 +16,9 @@ class LoadTest < Minitest::Test
 
   def test_load_error
     err = assert_raises RuntimeError do
-      TinyEtl::Loader.new({}, loaders: [{loader: Struct.new("Loader")}]).load_each!
+      TinyEtl::Loader.new({}, loaders: [{loader: Object}]).load_each!
     end
-    expected = "An error occurred for loader \"Struct::Loader\" with arguments \"\": struct size differs"
+    expected = "An error occurred for loader \"Object\" with arguments \"\": wrong number of arguments (1 for 0)"
     assert_equal expected, err.message
   end
 end
