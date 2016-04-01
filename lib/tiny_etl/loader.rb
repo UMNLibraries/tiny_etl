@@ -11,8 +11,17 @@ module TinyEtl
 
     def load_each!
       loaders.map do |config|
-        config[:loader].new(args: config[:args], state: state).load!
+        load!(config)
       end
+    end
+
+    private
+
+    def load!(config)
+      config[:loader].new(args: config[:args], state: state).load!
+    rescue Exception => e
+      raise "An error occurred for loader \"#{config[:loader]}\" " \
+      "with arguments \"#{config[:args]}\": #{e}"
     end
   end
 end

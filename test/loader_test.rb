@@ -13,4 +13,12 @@ class LoadTest < Minitest::Test
     loader.verify
     loader_object.verify
   end
+
+  def test_load_error
+    err = assert_raises RuntimeError do
+      TinyEtl::Loader.new({}, loaders: [{loader: Struct.new("Loader")}]).load_each!
+    end
+    expected = "An error occurred for loader \"Struct::Loader\" with arguments \"\": struct size differs"
+    assert_equal expected, err.message
+  end
 end
